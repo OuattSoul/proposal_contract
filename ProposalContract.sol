@@ -25,6 +25,8 @@ contract ProposalContract {
         voted_addresses.push(msg.sender);
     }
 
+    // ***** Modifiers  ***** //
+
     modifier onlyOwner(){
         require(msg.sender == owner, "Only owner can do this");
         _;
@@ -34,10 +36,16 @@ contract ProposalContract {
         _;
     }
 
-    /*modifier newVoter(address _address) {
+    modifier newVoter(address _address) {
         require (!isVoted(_address), "This address already voted");
         _;
-    }*/
+    }
+
+    // ***** Modifiers End ***** //
+
+
+    // ***** Functions ***** //
+
 
     function createProposal(string memory _proposal_title, string calldata _description, uint256 _total_vote_to_end) external onlyOwner {
         counter += 1;
@@ -86,6 +94,30 @@ contract ProposalContract {
                 return false;
             }
     }
+
+    function teminateProposal() external onlyOwner active {
+        proposal_history[counter].is_active = false;
+    }   
+
+
+    function isVoted(address _address) public view returns (bool) {
+        for (uint i = 0; i < voted_addresses.length; i++) {
+            if (voted_addresses[i] == _address) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function getCurrentProposal() external view returns(Proposal memory) {
+        return proposal_history[counter];
+    }
+
+    function getProposal(uint256 number) external view returns(Proposal memory) {
+        return proposal_history[number];
+    }
+
+    // ***** Functions End ***** //
     
    
 }
